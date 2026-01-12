@@ -1,0 +1,34 @@
+# version: '3.8'
+
+services:
+  postgres:
+    build: ./postgres
+    image: postgres:16
+    container_name: postgres-db
+    environment:
+      POSTGRES_PASSWORD: simple123
+      POSTGRES_DB: demo
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/01-create_datamart.sql:/docker-entrypoint-initdb.d/01-create_datamart.sql
+
+  mysql:
+    image: mysql:8      
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: etl_database
+      MYSQL_USER: etl_user
+      MYSQL_PASSWORD: etl_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  postgres_data:
+    driver: local
+  mysql_data:
+    driver: local
